@@ -1,0 +1,114 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Taj Mahal - Analoge Karten Kollektion</title>
+  <link rel="stylesheet" href="/common.css">
+  <style>
+    body {
+      background: radial-gradient(circle at center, #231b2d 0%, #110d17 100%);
+      color: #f7eed8;
+      font-family: 'Cinzel', Georgia, serif;
+      padding: 30px;
+      margin: 0;
+    }
+    h1 {
+      text-align: center;
+      color: #ffd700;
+      font-size: 2rem;
+      margin-bottom: 8px;
+      letter-spacing: 2px;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+    }
+    p.subtitle {
+      text-align: center;
+      color: #d7ccc8;
+      margin-bottom: 28px;
+      font-size: 1rem;
+    }
+    .section-title {
+      font-size: 1.2rem;
+      color: #e0a020;
+      border-bottom: 1px solid rgba(224, 160, 32, 0.4);
+      padding-bottom: 6px;
+      margin: 24px 0 16px;
+    }
+    .cards-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      justify-content: center;
+    }
+    .card-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .card-caption {
+      font-size: 0.8rem;
+      color: #cebfa4;
+      text-align: center;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>TAJ MAHAL - ANALOGE KARTENKOLLEKTION</h1>
+  <p class="subtitle">Originalgetreues Design im Stil von Franz Vohwinkel & Reiner Knizia: Mogul-Spitzbögen (Mihrab), edles Pergament, Juwelenfarben & historische Charakterillustrationen</p>
+
+  <div class="section-title">1. Die Hof-Figuren & Rollen (Einzel-Symbole in den 4 Spielfarben & Weiß)</div>
+  <div class="cards-grid" id="grid-figures"></div>
+
+  <div class="section-title">2. Doppel-Symbolkarten (Kombinationen) & neutrale weiße Karten</div>
+  <div class="cards-grid" id="grid-doubles"></div>
+
+  <div class="section-title">3. Die 4 Sonderkarten (Einfluss & Paläste)</div>
+  <div class="cards-grid" id="grid-specials"></div>
+
+  <script type="module">
+    import { generateAnalogCardSvg } from './card-art.js';
+
+    const figureCards = [
+      { id: 'c_rot_wesir', color: 'rot', symbols: ['Wesir'], label: 'Wesir (Rot / Politik)' },
+      { id: 'c_gelb_general', color: 'gelb', symbols: ['General'], label: 'General (Gelb / Militär)' },
+      { id: 'c_gruen_moench', color: 'gruen', symbols: ['Mönch'], label: 'Mönch (Grün / Religion)' },
+      { id: 'c_violett_prinzessin', color: 'violett', symbols: ['Prinzessin'], label: 'Prinzessin (Violett / Hof)' },
+      { id: 'c_rot_mogul', color: 'rot', symbols: ['Großmogul'], label: 'Großmogul (Rot / Herrscher)' },
+      { id: 'c_gelb_elefant', color: 'gelb', symbols: ['Elefant'], label: 'Elefant (Gelb / Macht)' }
+    ];
+
+    const doubleCards = [
+      { id: 'c_rot_w_g', color: 'rot', symbols: ['Wesir', 'General'], label: 'Wesir + General (Rot)' },
+      { id: 'c_gruen_m_p', color: 'gruen', symbols: ['Mönch', 'Prinzessin'], label: 'Mönch + Prinzessin (Grün)' },
+      { id: 'c_violett_mog_ele', color: 'violett', symbols: ['Großmogul', 'Elefant'], label: 'Großmogul + Elefant (Violett)' },
+      { id: 'c_weiss_wesir', color: 'weiss', isWhite: true, symbols: ['Wesir'], label: 'Weißer Joker (Wesir)' },
+      { id: 'c_weiss_general', color: 'weiss', isWhite: true, symbols: ['General'], label: 'Weißer Joker (General)' },
+      { id: 'c_weiss_elefant', color: 'weiss', isWhite: true, symbols: ['Elefant'], label: 'Weißer Joker (Elefant)' }
+    ];
+
+    const specialCards = [
+      { id: 'sc_wesir', isSpecial: true, specialType: 'Freie Farbwahl', label: 'Wesir-Sonderkarte' },
+      { id: 'sc_general', isSpecial: true, specialType: '+2 Einflusspunkte', label: 'General-Sonderkarte' },
+      { id: 'sc_moench', isSpecial: true, specialType: '+1 Großmogul', label: 'Mönch-Sonderkarte' },
+      { id: 'sc_prinzessin', isSpecial: true, specialType: '+1 Elefant', label: 'Prinzessin-Sonderkarte' }
+    ];
+
+    function renderGrid(containerId, list, w, h) {
+      const container = document.getElementById(containerId);
+      list.forEach(c => {
+        const item = document.createElement('div');
+        item.className = 'card-item';
+        item.innerHTML = generateAnalogCardSvg(c, { width: w, height: h }) + '<div class="card-caption">' + c.label + '</div>';
+        container.appendChild(item);
+      });
+    }
+
+    renderGrid('grid-figures', figureCards, 140, 210);
+    renderGrid('grid-doubles', doubleCards, 140, 210);
+    renderGrid('grid-specials', specialCards, 140, 210);
+  </script>
+</body>
+</html>
+  

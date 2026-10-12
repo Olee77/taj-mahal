@@ -1,4 +1,6 @@
 // public/table.js - Client-Logik für das Hauptbrett (Tisch-Ansicht)
+import { generateAnalogCardSvg } from './card-art.js';
+
 const socket = io();
 
 const SYMBOL_EMOJIS = {
@@ -375,20 +377,19 @@ function renderMarket(state) {
   marketCardsEl.innerHTML = '';
 
   state.marketCards.forEach(c => {
-    const cardEl = createMiniCard(c);
+    const cardEl = document.createElement('div');
+    cardEl.className = 'market-card-wrapper';
+    cardEl.title = `${c.color ? c.color.toUpperCase() : 'WEISS'}: ${(c.symbols || []).join(' + ')}`;
+    cardEl.innerHTML = generateAnalogCardSvg(c, { width: 62, height: 93, isMini: false });
     marketCardsEl.appendChild(cardEl);
   });
 }
 
 function createMiniCard(c) {
   const div = document.createElement('div');
-  div.className = `card-mini ${c.color || 'weiss'}`;
-
-  const syms = (c.symbols || []).map(s => SYMBOL_EMOJIS[s] || s).join('');
-  div.innerHTML = `
-    <span class="card-color-tag">${c.color ? c.color.toUpperCase() : 'WEISS'}</span>
-    <div class="card-syms">${syms}</div>
-  `;
+  div.className = 'table-mini-card-wrapper';
+  div.title = `${c.color ? c.color.toUpperCase() : 'WEISS'}: ${(c.symbols || []).join(' + ')}`;
+  div.innerHTML = generateAnalogCardSvg(c, { width: 44, height: 66, isMini: true });
   return div;
 }
 

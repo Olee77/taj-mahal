@@ -1,4 +1,6 @@
 // public/player.js - Client-Logik für den Smartphone-Controller
+import { generateAnalogCardSvg } from './card-art.js';
+
 const socket = io();
 
 const SYMBOL_EMOJIS = {
@@ -134,8 +136,26 @@ socket.on('player_state', state => {
 });
 
 socket.on('game_error', ({ message }) => {
-  alert(`Regelhinweis: ${message}`);
+  console.warn('Spielhinweis:', message);
+  showToast(`Regelhinweis: ${message}`);
 });
+
+function showToast(msg) {
+  let toast = document.getElementById('toast-banner');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'toast-banner';
+    toast.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#c62828;color:#fff;padding:10px 18px;border-radius:8px;font-size:0.9rem;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.6);text-align:center;max-width:90%;transition:opacity 0.3s;';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = msg;
+  toast.style.display = 'block';
+  toast.style.opacity = '1';
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    setTimeout(() => { toast.style.display = 'none'; }, 300);
+  }, 3500);
+}
 
 // View Rendern
 function renderPlayerView(state) {
@@ -210,9 +230,8 @@ function renderHandCards(state) {
     const cardEl = document.createElement('div');
     const isSpecial = c.isSpecial;
     const isWhite = c.isWhite;
-    const colorClass = isSpecial ? 'special' : (isWhite ? 'weiss' : c.color);
 
-    cardEl.className = `player-card ${colorClass} ${selectedCards.has(c.id) ? 'selected' : ''}`;
+    cardEl.className = `player-card-wrapper ${selectedCards.has(c.id) ? 'selected' : ''}`;
 
     // Farbzwang-Prüfung: Falls Farbe gelockt ist und die Karte eine andere reguläre Farbe hat
     const isForbiddenColor = state.lockedColor && !isWhite && !isSpecial && c.color !== state.lockedColor;
@@ -227,18 +246,7 @@ function renderHandCards(state) {
       }
     }
 
-    const syms = (c.symbols || []).map(s => SYMBOL_EMOJIS[s] || s).join(' ');
-    const tagText = isSpecial ? 'SONDER' : (isWhite ? 'WEISS' : c.color.toUpperCase());
-    const descText = isSpecial ? c.specialType : (c.symbols ? c.symbols.join(' + ') : '');
-
-    cardEl.innerHTML = `
-      <div class="card-top-tag">
-        <span>${tagText}</span>
-        <span>${isSpecial ? '★' : ''}</span>
-      </div>
-      <div class="card-center-syms">${syms || '★'}</div>
-      <div class="card-bottom-desc">${descText}</div>
-    `;
+    cardEl.innerHTML = generateAnalogCardSvg(c, { width: 140, height: 210 });
 
     cardEl.addEventListener('click', () => onCardClicked(c, state));
     handCardsContainer.appendChild(cardEl);
@@ -391,7 +399,19 @@ function handlePendingChoices(state) {
       : `Wähle eine freie Stadt für deinen Palast (noch ${pChoice.normalPalacesLeft} zu setzen):`;
 
     palaceCityList.innerHTML = '';
-    const provCities = citiesData.filter(c => c.province === state.currentProvince.id);
+    const provCities = citiesData.filter(c => {
+      if (c.province !== state.currentProvince.id) return false;
+      const cs = state.citiesState && state.citiesState[c.id];
+      if (isCrown) {
+        return !cs || !cs.crownPalace;
+      } else {
+        return !cs || !cs.normalPalace;
+      }
+    });
+
+    if (provCities.length === 0) {
+      palaceCityList.innerHTML = '<div style="color:#aaa;padding:12px;text-align:center;">Keine freien Städte mehr in dieser Provinz.</div>';
+    }
 
     provCities.forEach(city => {
       const btn = document.createElement('button');
@@ -421,14 +441,9 @@ function handlePendingChoices(state) {
 
     (state.marketCards || []).forEach(mc => {
       const cardEl = document.createElement('div');
-      cardEl.className = `player-card ${mc.color || 'weiss'} ${selectedDraftCards.has(mc.id) ? 'selected' : ''}`;
-      cardEl.style.height = '120px';
-
-      const syms = (mc.symbols || []).map(s => SYMBOL_EMOJIS[s] || s).join(' ');
-      cardEl.innerHTML = `
-        <div class="card-top-tag">${mc.color ? mc.color.toUpperCase() : 'WEISS'}</div>
-        <div class="card-center-syms" style="font-size:1.6rem;">${syms}</div>
-      `;
+      cardEl.className = `player-card-wrapper ${selectedDraftCards.has(mc.id) ? 'selected' : ''}`;
+      cardEl.style.cursor = 'pointer';
+      cardEl.innerHTML = generateAnalogCardSvg(mc, { width: 125, height: 185 });
 
       cardEl.addEventListener('click', () => {
         if (selectedDraftCards.has(mc.id)) {

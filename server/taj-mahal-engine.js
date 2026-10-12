@@ -955,6 +955,7 @@ export class TajMahalGame {
       isMyTurn: this.status === 'playing' && this.players[this.activePlayerIndex]?.id === p.id && !p.withdrawn,
       pendingChoiceForMe: this.pendingWithdrawalChoice && this.pendingWithdrawalChoice.playerId === p.id ? this.pendingWithdrawalChoice : null,
       marketCards: this.marketCards,
+      citiesState: this.citiesState,
       currentProvince: this.currentProvince,
       currentVisitIndex: this.currentVisitIndex,
       status: this.status

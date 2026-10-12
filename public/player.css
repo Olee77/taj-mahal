@@ -188,44 +188,35 @@ body {
 .cards-scroll-container {
   flex: 1;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(135px, 1fr));
+  gap: 14px;
   overflow-y: auto;
-  padding-bottom: 20px;
+  padding: 8px 4px 24px;
 }
 
-/* Smartphone Handkarten (Tippbar, Groß) */
-.player-card {
-  height: 155px;
-  border-radius: 12px;
-  background: #252030;
-  border: 3px solid #443755;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 8px;
-  cursor: pointer;
+/* Smartphone Handkarten (Analoges Mogul-Design) */
+.player-card-wrapper {
   position: relative;
-  transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.2s;
+  user-select: none;
 }
 
-.player-card.rot { border-color: var(--card-rot); background: #35151b; }
-.player-card.gelb { border-color: #f57f17; background: #332d16; }
-.player-card.gruen { border-color: var(--card-gruen); background: #132e18; }
-.player-card.violett { border-color: var(--card-violett); background: #261438; }
-.player-card.weiss { border-color: #9e9e9e; background: #292929; }
-.player-card.special { border-color: #ffd700; background: #382c16; }
-
-.player-card.selected {
-  transform: translateY(-8px) scale(1.04);
-  border-color: #fff !important;
-  box-shadow: 0 8px 20px rgba(255, 215, 0, 0.6);
+.player-card-wrapper:hover {
+  transform: translateY(-4px);
 }
 
-.player-card.disabled {
+.player-card-wrapper.selected {
+  transform: translateY(-12px) scale(1.05);
+  filter: drop-shadow(0 0 12px rgba(255, 215, 0, 0.95)) drop-shadow(0 8px 18px rgba(0,0,0,0.85));
+}
+
+.player-card-wrapper.disabled {
   opacity: 0.35;
-  filter: grayscale(0.8);
+  filter: grayscale(0.85);
+  pointer-events: none;
 }
 
 .card-top-tag {
