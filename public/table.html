@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Taj Mahal - Hauptbrett (Tisch-Ansicht)</title>
+  <link rel="stylesheet" href="common.css">
+  <link rel="stylesheet" href="table.css">
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+  <div class="table-layout">
+    <!-- Linker/Zentraler Bereich: Das Spielbrett -->
+    <main class="board-section">
+      <!-- Top Statusleiste -->
+      <header class="board-header">
+        <div class="game-title">
+          <span class="moghul-icon">🕌</span>
+          <h1>TAJ MAHAL</h1>
+          <span class="author">von Reiner Knizia</span>
+        </div>
+
+        <div class="visit-indicator" id="visit-indicator">
+          <div class="visit-badge" id="visit-badge">LOBBY</div>
+          <div class="province-name" id="province-name">Warte auf Spieler...</div>
+        </div>
+
+        <div class="header-actions">
+          <button class="btn btn-secondary" id="btn-show-qr">📱 Handy verbinden</button>
+          <button class="btn" id="btn-start-game">▶ Spiel starten</button>
+        </div>
+      </header>
+
+      <!-- Responsiver Spielbrett-Container mit SVG Overlay über board.jpg -->
+      <div class="board-viewport">
+        <div class="board-aspect-box">
+          <svg id="board-svg" viewBox="0 0 1024 719" preserveAspectRatio="xMidYMid meet">
+            <!-- 1. Originales Spielbrett als Hintergrundbild -->
+            <image href="board.jpg" x="0" y="0" width="1024" height="719" id="board-image" />
+
+            <!-- 2. Provinz-Hervorhebung -->
+            <g id="layer-province-glow"></g>
+
+            <!-- 3. Städte, Festungen & Paläste -->
+            <g id="layer-cities"></g>
+
+            <!-- 4. Hof des Großmoguls (Plättchen, Marken, Krone) -->
+            <g id="layer-court"></g>
+
+            <!-- 5. Wertungsleiste (0 - 65) Marker -->
+            <g id="layer-score-track"></g>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Unterer Bereich: Offener Kartennachschub -->
+      <footer class="market-bar">
+        <div class="market-header">
+          <span class="market-title">🃏 Offener Kartennachschub:</span>
+          <span class="deck-counts" id="deck-counts">Nachziehstapel: 0 | Ablagestapel: 0</span>
+        </div>
+        <div class="market-cards" id="market-cards">
+          <!-- Dynamisch gerendert -->
+        </div>
+      </footer>
+    </main>
+
+    <!-- Rechte Seitenleiste: Spieler, Züge, Auslage & Log -->
+    <aside class="sidebar">
+      <!-- Spieler-Übersicht & Punktestände -->
+      <section class="panel players-panel">
+        <h2 class="panel-title">Spieler & Punktestand</h2>
+        <div class="players-list" id="players-list">
+          <div class="empty-state">Noch keine Spieler verbunden...</div>
+        </div>
+      </section>
+
+      <!-- Aktueller Biet-Streit: Ausgelegte Karten der Spieler -->
+      <section class="panel bidding-panel">
+        <div class="bidding-header">
+          <h2 class="panel-title">Aktueller Kampf um die Provinz</h2>
+          <span class="active-turn-badge" id="active-turn-badge">--</span>
+        </div>
+        <div class="played-cards-container" id="played-cards-container">
+          <!-- Zeigt für jeden Spieler die ausgelegten Karten und Symbol-Summen -->
+        </div>
+      </section>
+
+      <!-- Spielprotokoll -->
+      <section class="panel log-panel">
+        <h2 class="panel-title">Ereignisse</h2>
+        <div class="log-stream" id="log-stream">
+          <div class="log-entry">Willkommen bei Taj Mahal!</div>
+        </div>
+      </section>
+    </aside>
+  </div>
+
+  <!-- QR-Code Verbindungs-Modal -->
+  <div class="modal-overlay" id="qr-modal" style="display: none;">
+    <div class="modal-content qr-modal-content">
+      <h2>Mit dem Smartphone beitreten</h2>
+      <p class="modal-hint">Scanne den QR-Code mit der Handykamera, um deine geheime Kartenhand zu öffnen:</p>
+      
+      <div class="qr-container">
+        <img id="qr-img" alt="QR Code für Handy-Controller" />
+        <div class="join-url-box">
+          <span id="join-url-text">http://...</span>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn btn-secondary" id="btn-close-qr">Schließen</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="table.js"></script>
+</body>
+</html>

@@ -1,0 +1,154 @@
+/* public/common.css - Zentrales Theme für Taj Mahal */
+:root {
+  --bg-dark: #121016;
+  --bg-card: #1f1b26;
+  --bg-panel: #292333;
+  --bg-accent: #3d324c;
+  --border-gold: #c89b3c;
+  --border-gold-glow: rgba(200, 155, 60, 0.4);
+  --gold-text: #f6d177;
+  --gold-dark: #8c6a25;
+  --text-main: #f3eff5;
+  --text-muted: #a79fb2;
+
+  /* Spieler-Farben */
+  --p-red: #d32f2f;
+  --p-blue: #1976d2;
+  --p-green: #388e3c;
+  --p-yellow: #fbc02d;
+  --p-purple: #7b1fa2;
+
+  /* Kartenfarben */
+  --card-rot: #d32f2f;
+  --card-gelb: #fbc02d;
+  --card-gruen: #2e7d32;
+  --card-violett: #6a1b9a;
+  --card-weiss: #e0e0e0;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Typografie & Überschriften */
+h1, h2, h3, h4 {
+  font-family: Georgia, "Times New Roman", serif;
+  color: var(--gold-text);
+  letter-spacing: 0.5px;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--border-gold);
+  background: linear-gradient(135deg, #7d5e1b, #c89b3c);
+  color: #121016;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.3);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  transition: all 0.2s ease;
+}
+
+.btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px var(--border-gold-glow);
+  background: linear-gradient(135deg, #8c6a25, #dfb14e);
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  filter: grayscale(0.8);
+}
+
+.btn-secondary {
+  background: var(--bg-accent);
+  color: var(--text-main);
+  border-color: #554466;
+  text-shadow: none;
+}
+.btn-secondary:hover:not(:disabled) {
+  background: #4e3f60;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+
+.btn-danger {
+  background: linear-gradient(135deg, #8b1818, #d32f2f);
+  color: #fff;
+  border-color: #f44336;
+}
+
+/* Modals */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.78);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  padding: 20px;
+}
+
+.modal-content {
+  background: var(--bg-panel);
+  border: 2px solid var(--border-gold);
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 550px;
+  width: 100%;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.8);
+  animation: modalIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Badges & Tags */
+.badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+.badge-gold {
+  background: var(--gold-dark);
+  color: var(--gold-text);
+  border: 1px solid var(--border-gold);
+}
+
+/* Symbole für Karten & Spiellogik */
+.sym-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+}

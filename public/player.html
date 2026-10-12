@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Taj Mahal - Spieler-Handy</title>
+  <link rel="stylesheet" href="common.css">
+  <link rel="stylesheet" href="player.css">
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+  <!-- 1. Lobby-Ansicht (Beitreten) -->
+  <section id="view-lobby" class="screen-view">
+    <div class="lobby-card">
+      <div class="lobby-header">
+        <span class="moghul-icon">🕌</span>
+        <h1>Taj Mahal</h1>
+        <p>Lokaler Mehrspieler-Controller</p>
+      </div>
+
+      <div class="form-group">
+        <label for="player-name-input">Dein Name:</label>
+        <input type="text" id="player-name-input" placeholder="z. B. Akbar" maxlength="15" autocomplete="off" />
+      </div>
+
+      <div class="form-group">
+        <label>Wähle deine Farbe:</label>
+        <div class="color-picker" id="color-picker">
+          <div class="color-opt" data-color="red" style="background:#d32f2f" title="Rot"></div>
+          <div class="color-opt" data-color="blue" style="background:#1976d2" title="Blau"></div>
+          <div class="color-opt" data-color="green" style="background:#388e3c" title="Grün"></div>
+          <div class="color-opt" data-color="yellow" style="background:#fbc02d" title="Gelb"></div>
+          <div class="color-opt" data-color="purple" style="background:#7b1fa2" title="Violett"></div>
+        </div>
+      </div>
+
+      <button class="btn" id="btn-join-game" style="width: 100%; margin-top: 15px;">Dem Spiel beitreten</button>
+    </div>
+  </section>
+
+  <!-- 2. Spiel-Ansicht (Controller & Handkarten) -->
+  <section id="view-game" class="screen-view" style="display: none;">
+    <!-- Top-Header für Smartphone -->
+    <header class="player-header">
+      <div class="player-profile">
+        <span class="player-color-dot" id="header-color-dot"></span>
+        <span class="player-name" id="header-player-name">Spieler</span>
+      </div>
+
+      <div class="player-quick-stats">
+        <span class="stat-badge" id="header-score">0 VP</span>
+        <span class="stat-badge" id="header-palaces">🏰 20</span>
+      </div>
+    </header>
+
+    <!-- Runden- & Zug-Banner -->
+    <div class="turn-banner" id="turn-banner">
+      <div class="turn-title" id="turn-title">Warte auf Rundenstart...</div>
+      <div class="turn-subtitle" id="turn-subtitle">Provinz --</div>
+    </div>
+
+    <!-- Farbzwang Info -->
+    <div class="color-lock-bar" id="color-lock-bar">
+      <span>Gespielte Farbe in diesem Besuch:</span>
+      <span class="badge" id="color-lock-badge">FREI</span>
+    </div>
+
+    <!-- Handkarten Bereich -->
+    <main class="hand-area">
+      <div class="hand-header">
+        <h2>Deine Handkarten (<span id="hand-count">0</span>)</h2>
+        <span class="hand-hint">Tippe auf 1 Farbkarte (+ optional 1 weiße/Sonderkarte)</span>
+      </div>
+
+      <div class="cards-scroll-container" id="hand-cards-container">
+        <!-- Dynamisch gerenderte Karten -->
+      </div>
+    </main>
+
+    <!-- Aktionsleiste unten -->
+    <footer class="player-footer">
+      <button class="btn" id="btn-play-cards" disabled>
+        🃏 Karten ausspielen (<span id="selected-count">0</span>/2)
+      </button>
+      <button class="btn btn-danger" id="btn-withdraw" disabled>
+        🛑 Zurückziehen
+      </button>
+    </footer>
+
+    <!-- Ausklappbarer Tab für Inventar & Schätze -->
+    <div class="inventory-bar" id="inventory-toggle">
+      <span>📦 Meine Waren & Marken ansehen</span>
+      <span id="inv-arrow">▲</span>
+    </div>
+
+    <div class="inventory-drawer" id="inventory-drawer" style="display: none;">
+      <div class="inv-section">
+        <h3>Einflussmarken</h3>
+        <div class="token-grid" id="inv-tokens"></div>
+      </div>
+      <div class="inv-section">
+        <h3>Gesammelte Waren</h3>
+        <div class="goods-grid" id="inv-commodities"></div>
+      </div>
+      <div class="inv-section">
+        <h3>Sonderkarten auf der Hand</h3>
+        <div class="special-grid" id="inv-specials"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Modal: Palast platzieren (nach Rückzug) -->
+  <div class="modal-overlay" id="modal-palace" style="display: none;">
+    <div class="modal-content">
+      <h2 id="palace-modal-title">Palast errichten!</h2>
+      <p class="modal-hint" id="palace-modal-desc">
+        Du hast eine Mehrheit gewonnen! Wähle eine freie Stadt in der aktuellen Provinz, um deinen Palast zu bauen.
+      </p>
+
+      <div class="city-selection-list" id="palace-city-list">
+        <!-- Städte der aktuellen Provinz -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Kartennachschub wählen (nach Rückzug) -->
+  <div class="modal-overlay" id="modal-draft" style="display: none;">
+    <div class="modal-content">
+      <h2>Karten aus dem Nachschub wählen</h2>
+      <p class="modal-hint" id="draft-modal-desc">Wähle Karten aus dem offenen Nachschub für deine Hand:</p>
+
+      <div class="draft-cards-grid" id="draft-cards-grid">
+        <!-- Offene Karten -->
+      </div>
+
+      <div class="modal-actions" style="margin-top: 16px;">
+        <button class="btn" id="btn-confirm-draft" disabled>Ausgewählte Karten nehmen</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="player.js"></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "name": "tadsch-mahal-boardgame",
+  "version": "1.0.0",
+  "description": "Taj Mahal (Tadsch Mahal) by Reiner Knizia - Local Asymmetric Multiplayer Board Game",
+  "main": "server/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server/index.js",
+    "test": "node --test test/*.test.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "qrcode": "^1.5.4",
+    "socket.io": "^4.8.1"
+  }
+}

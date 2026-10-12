@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Taj Mahal - Reiner Knizia</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: radial-gradient(circle at center, #261f30 0%, #0d0b11 100%);
+      padding: 20px;
+    }
+    .portal-card {
+      background: var(--bg-panel);
+      border: 2px solid var(--border-gold);
+      border-radius: 16px;
+      padding: 36px 28px;
+      max-width: 460px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.8);
+    }
+    .portal-icon {
+      font-size: 3.8rem;
+      margin-bottom: 8px;
+      display: block;
+    }
+    .portal-title {
+      font-size: 2.4rem;
+      letter-spacing: 2px;
+      margin-bottom: 4px;
+    }
+    .portal-subtitle {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 28px;
+    }
+    .portal-options {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .portal-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 16px 20px;
+      border-radius: 10px;
+      font-size: 1.15rem;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+    .portal-btn-primary {
+      background: linear-gradient(135deg, #7d5e1b, #c89b3c);
+      color: #121016;
+      border: 1px solid var(--border-gold);
+      box-shadow: 0 4px 15px rgba(200, 155, 60, 0.4);
+    }
+    .portal-btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 22px rgba(200, 155, 60, 0.6);
+    }
+    .portal-btn-secondary {
+      background: var(--bg-card);
+      color: var(--text-main);
+      border: 1px solid #4f3f63;
+    }
+    .portal-btn-secondary:hover {
+      transform: translateY(-2px);
+      background: #2b2336;
+      border-color: var(--border-gold);
+    }
+  </style>
+</head>
+<body>
+  <div class="portal-card">
+    <span class="portal-icon">🕌</span>
+    <h1 class="portal-title">TAJ MAHAL</h1>
+    <p class="portal-subtitle">Ein Spiel um Macht und Einfluss in Indien – Reiner Knizia</p>
+
+    <div class="portal-options">
+      <a href="table.html" class="portal-btn portal-btn-primary">
+        🖥️ Tisch-Ansicht öffnen (Host / PC / TV)
+      </a>
+      <a href="player.html" class="portal-btn portal-btn-secondary">
+        📱 Handy-Controller öffnen (Spieler)
+      </a>
+    </div>
+  </div>
+</body>
+</html>
