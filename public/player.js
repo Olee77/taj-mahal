@@ -231,7 +231,7 @@ function renderHandCards(state) {
     const isSpecial = c.isSpecial;
     const isWhite = c.isWhite;
 
-    cardEl.className = `player-card-wrapper ${selectedCards.has(c.id) ? 'selected' : ''}`;
+    cardEl.className = `player-card-wrapper player-card ${selectedCards.has(c.id) ? 'selected' : ''}`;
 
     // Farbzwang-Prüfung: Falls Farbe gelockt ist und die Karte eine andere reguläre Farbe hat
     const isForbiddenColor = state.lockedColor && !isWhite && !isSpecial && c.color !== state.lockedColor;
@@ -246,7 +246,15 @@ function renderHandCards(state) {
       }
     }
 
-    cardEl.innerHTML = generateAnalogCardSvg(c, { width: 140, height: 210 });
+    if (c.image) {
+      cardEl.innerHTML = `
+        <div class="card-photo-container">
+          <img src="${c.image}" class="player-card-photo" alt="${c.name || 'Karte'}" draggable="false" />
+        </div>
+      `;
+    } else {
+      cardEl.innerHTML = generateAnalogCardSvg(c, { width: 140, height: 210 });
+    }
 
     cardEl.addEventListener('click', () => onCardClicked(c, state));
     handCardsContainer.appendChild(cardEl);
@@ -441,9 +449,16 @@ function handlePendingChoices(state) {
 
     (state.marketCards || []).forEach(mc => {
       const cardEl = document.createElement('div');
-      cardEl.className = `player-card-wrapper ${selectedDraftCards.has(mc.id) ? 'selected' : ''}`;
-      cardEl.style.cursor = 'pointer';
-      cardEl.innerHTML = generateAnalogCardSvg(mc, { width: 125, height: 185 });
+      cardEl.className = `player-card-wrapper player-card ${selectedDraftCards.has(mc.id) ? 'selected' : ''}`;
+      if (mc.image) {
+        cardEl.innerHTML = `
+          <div class="card-photo-container draft-photo">
+            <img src="${mc.image}" class="player-card-photo" alt="${mc.name || 'Karte'}" draggable="false" />
+          </div>
+        `;
+      } else {
+        cardEl.innerHTML = generateAnalogCardSvg(mc, { width: 125, height: 185 });
+      }
 
       cardEl.addEventListener('click', () => {
         if (selectedDraftCards.has(mc.id)) {

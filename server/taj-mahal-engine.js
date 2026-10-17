@@ -193,68 +193,103 @@ export class TajMahalGame {
 
   buildDeck() {
     this.deck = [];
-    const colors = [CARD_COLORS.RED, CARD_COLORS.YELLOW, CARD_COLORS.GREEN, CARD_COLORS.PURPLE];
-    let cardId = 1;
+    const colors = [
+      { id: CARD_COLORS.RED, prefix: 'red', name: 'Rot' },
+      { id: CARD_COLORS.YELLOW, prefix: 'yellow', name: 'Gelb' },
+      { id: CARD_COLORS.GREEN, prefix: 'green', name: 'Grün' },
+      { id: CARD_COLORS.PURPLE, prefix: 'violet', name: 'Violett' }
+    ];
 
-    // 84 Farbkarten: 21 pro Farbe
-    // Symbolverteilung pro Farbe nach Originalspiel:
-    // Elefanten (wirtschaftlich), Wesir, General, Mönch, Prinzessin, Mogul
+    const COLOR_CARD_TEMPLATES = [
+      { num: 1, symbols: [SYMBOLS.ELEPHANT, SYMBOLS.GENERAL] },
+      { num: 2, symbols: [SYMBOLS.ELEPHANT, SYMBOLS.MOGUL] },
+      { num: 3, symbols: [SYMBOLS.ELEPHANT, SYMBOLS.MONK] },
+      { num: 4, symbols: [SYMBOLS.ELEPHANT, SYMBOLS.PRINCESS] },
+      { num: 5, symbols: [SYMBOLS.ELEPHANT, SYMBOLS.VIZIER] },
+      { num: 6, symbols: [SYMBOLS.ELEPHANT, SYMBOLS.ELEPHANT] },
+      { num: 7, symbols: [SYMBOLS.ELEPHANT, SYMBOLS.ELEPHANT] },
+      { num: 8, symbols: [SYMBOLS.ELEPHANT, SYMBOLS.GENERAL] },
+      { num: 9, symbols: [SYMBOLS.ELEPHANT, SYMBOLS.MOGUL] },
+      { num: 10, symbols: [SYMBOLS.ELEPHANT, SYMBOLS.MONK] },
+      { num: 11, symbols: [SYMBOLS.ELEPHANT, SYMBOLS.PRINCESS] },
+      { num: 12, symbols: [SYMBOLS.ELEPHANT, SYMBOLS.VIZIER] },
+      { num: 13, symbols: [SYMBOLS.PRINCESS, SYMBOLS.MONK] },
+      { num: 14, symbols: [SYMBOLS.MONK, SYMBOLS.GENERAL] },
+      { num: 15, symbols: [SYMBOLS.ELEPHANT, SYMBOLS.GENERAL] },
+      { num: 16, symbols: [SYMBOLS.ELEPHANT, SYMBOLS.MOGUL] },
+      { num: 17, symbols: [SYMBOLS.ELEPHANT, SYMBOLS.MONK] },
+      { num: 18, symbols: [SYMBOLS.ELEPHANT, SYMBOLS.PRINCESS] },
+      { num: 19, symbols: [SYMBOLS.GENERAL, SYMBOLS.MOGUL] },
+      { num: 20, symbols: [SYMBOLS.VIZIER, SYMBOLS.PRINCESS] },
+      { num: 21, symbols: [SYMBOLS.VIZIER, SYMBOLS.MOGUL] }
+    ];
+
+    // 84 Farbkarten: 21 pro Farbe (mit echten Fotos)
     colors.forEach(col => {
-      // 3x Elefant einzeln
-      for (let i = 0; i < 3; i++) this.deck.push({ id: `c_${cardId++}`, color: col, symbols: [SYMBOLS.ELEPHANT] });
-      // 2x 2 Elefanten
-      for (let i = 0; i < 2; i++) this.deck.push({ id: `c_${cardId++}`, color: col, symbols: [SYMBOLS.ELEPHANT, SYMBOLS.ELEPHANT] });
-      // 2x Großmogul
-      for (let i = 0; i < 2; i++) this.deck.push({ id: `c_${cardId++}`, color: col, symbols: [SYMBOLS.MOGUL] });
-      // 1x 2 Großmogul
-      this.deck.push({ id: `c_${cardId++}`, color: col, symbols: [SYMBOLS.MOGUL, SYMBOLS.MOGUL] });
-      // Wesir, General, Mönch, Prinzessin einzeln (je 2x)
-      [SYMBOLS.VIZIER, SYMBOLS.GENERAL, SYMBOLS.MONK, SYMBOLS.PRINCESS].forEach(sym => {
-        for (let i = 0; i < 2; i++) this.deck.push({ id: `c_${cardId++}`, color: col, symbols: [sym] });
-      });
-      // Kombinationen: Wesir+Elefant, General+Elefant, Mönch+Elefant, Prinzessin+Elefant, Mogul+Elefant
-      [SYMBOLS.VIZIER, SYMBOLS.GENERAL, SYMBOLS.MONK, SYMBOLS.PRINCESS, SYMBOLS.MOGUL].forEach(sym => {
-        this.deck.push({ id: `c_${cardId++}`, color: col, symbols: [sym, SYMBOLS.ELEPHANT] });
+      COLOR_CARD_TEMPLATES.forEach(tmpl => {
+        const numStr = String(tmpl.num).padStart(2, '0');
+        this.deck.push({
+          id: `${col.prefix}_${numStr}`,
+          color: col.id,
+          symbols: [...tmpl.symbols],
+          image: `/assets/cards/${col.prefix}_${numStr}.jpg`,
+          name: `${col.name} ${tmpl.symbols.join(' & ')}`
+        });
       });
     });
 
-    // 12 Weiße Karten (farblos)
-    // 7x Elefant, je 1x Wesir, General, Mönch, Prinzessin, Mogul
-    for (let i = 0; i < 7; i++) {
-      this.deck.push({ id: `w_${cardId++}`, color: 'weiss', isWhite: true, symbols: [SYMBOLS.ELEPHANT] });
-    }
-    [SYMBOLS.VIZIER, SYMBOLS.GENERAL, SYMBOLS.MONK, SYMBOLS.PRINCESS, SYMBOLS.MOGUL].forEach(sym => {
-      this.deck.push({ id: `w_${cardId++}`, color: 'weiss', isWhite: true, symbols: [sym] });
+    // 12 Weiße Karten (farblos mit echten Fotos)
+    const WHITE_CARD_TEMPLATES = [
+      { num: 1, symbols: [SYMBOLS.ELEPHANT] },
+      { num: 2, symbols: [SYMBOLS.ELEPHANT] },
+      { num: 3, symbols: [SYMBOLS.MONK] },
+      { num: 4, symbols: [SYMBOLS.PRINCESS] },
+      { num: 5, symbols: [SYMBOLS.ELEPHANT] },
+      { num: 6, symbols: [SYMBOLS.ELEPHANT] },
+      { num: 7, symbols: [SYMBOLS.ELEPHANT] },
+      { num: 8, symbols: [SYMBOLS.GENERAL] },
+      { num: 9, symbols: [SYMBOLS.VIZIER] },
+      { num: 10, symbols: [SYMBOLS.ELEPHANT] },
+      { num: 11, symbols: [SYMBOLS.ELEPHANT] },
+      { num: 12, symbols: [SYMBOLS.MOGUL] }
+    ];
+
+    WHITE_CARD_TEMPLATES.forEach(tmpl => {
+      const numStr = String(tmpl.num).padStart(2, '0');
+      this.deck.push({
+        id: `white_${numStr}`,
+        color: 'weiss',
+        isWhite: true,
+        symbols: [...tmpl.symbols],
+        image: `/assets/cards/white_${numStr}.jpg`,
+        name: `Weißer ${tmpl.symbols.join(' & ')}`
+      });
     });
   }
 
   setupProvinces() {
-    // 12 achteckige Provinz-Plättchen
-    // Nr. 12 liegt immer in Agra (Provinz 8)
-    // Nr. 1 bis 11 werden verdeckt gemischt auf die restlichen 11 Provinzen gelegt
-    const goodsPool = [
-      COMMODITIES.RICE, COMMODITIES.TEA, COMMODITIES.SPICE, COMMODITIES.JEWEL
+    // 12 achteckige Provinz-Plättchen (exakt nach fotografierten Originalteilen)
+    const ALL_PROVINCE_TILES = [
+      { number: 1, goods: [COMMODITIES.RICE] },
+      { number: 2, goods: [COMMODITIES.JEWEL, COMMODITIES.TEA] },
+      { number: 3, goods: [COMMODITIES.SPICE, COMMODITIES.JEWEL] },
+      { number: 4, goods: [COMMODITIES.RICE, COMMODITIES.TEA] },
+      { number: 5, goods: [COMMODITIES.SPICE, COMMODITIES.TEA] },
+      { number: 6, goods: [COMMODITIES.RICE, COMMODITIES.JEWEL] },
+      { number: 7, goods: [COMMODITIES.RICE, COMMODITIES.SPICE] },
+      { number: 8, goods: [COMMODITIES.RICE, COMMODITIES.JEWEL] },
+      { number: 9, goods: [COMMODITIES.SPICE, COMMODITIES.TEA] },
+      { number: 10, goods: [COMMODITIES.SPICE, COMMODITIES.JEWEL] },
+      { number: 11, goods: [COMMODITIES.RICE, COMMODITIES.TEA] },
+      { number: 12, goods: [COMMODITIES.RICE, COMMODITIES.SPICE] }
     ];
 
-    const tiles1to11 = [];
-    // Plättchen 1: 1 Ware
-    tiles1to11.push({ number: 1, goods: [COMMODITIES.RICE] });
-    // Plättchen 2 bis 11: jeweils 2 Waren
-    const sampleGoods = [
-      [COMMODITIES.TEA, COMMODITIES.SPICE],
-      [COMMODITIES.RICE, COMMODITIES.JEWEL],
-      [COMMODITIES.TEA, COMMODITIES.TEA],
-      [COMMODITIES.SPICE, COMMODITIES.JEWEL],
-      [COMMODITIES.RICE, COMMODITIES.SPICE],
-      [COMMODITIES.TEA, COMMODITIES.JEWEL],
-      [COMMODITIES.SPICE, COMMODITIES.SPICE],
-      [COMMODITIES.RICE, COMMODITIES.TEA],
-      [COMMODITIES.JEWEL, COMMODITIES.JEWEL],
-      [COMMODITIES.TEA, COMMODITIES.SPICE]
-    ];
-    for (let i = 2; i <= 11; i++) {
-      tiles1to11.push({ number: i, goods: sampleGoods[i - 2] });
-    }
+    // Nr. 12 liegt immer in Agra (Provinz 8)
+    // Nr. 1 bis 11 werden verdeckt gemischt auf die restlichen 11 Provinzen gelegt
+    const tiles1to11 = ALL_PROVINCE_TILES.slice(0, 11).map(t => ({
+      ...t,
+      image: `/assets/tiles/tile_${String(t.number).padStart(2, '0')}.png`
+    }));
 
     this.shuffle(tiles1to11);
 
@@ -270,18 +305,21 @@ export class TajMahalGame {
       this.provinceTiles.push({
         provinceId: prov.id,
         number: tile.number,
-        goods: tile.goods
+        goods: tile.goods,
+        image: tile.image
       });
     }
 
     // Agra ist immer Plättchen 12
     const agraProv = PROVINCES.find(p => p.id === 8);
+    const tile12 = ALL_PROVINCE_TILES[11];
     agraProv.tileNumber = 12;
-    agraProv.goods = [COMMODITIES.JEWEL, COMMODITIES.SPICE];
+    agraProv.goods = tile12.goods;
     this.provinceTiles.push({
       provinceId: agraProv.id,
       number: 12,
-      goods: agraProv.goods
+      goods: tile12.goods,
+      image: `/assets/tiles/tile_12.png`
     });
 
     // Nach Plättchennummer sortieren (Besuchsreihenfolge 1 bis 12!)
@@ -291,25 +329,30 @@ export class TajMahalGame {
   setupBonusTiles() {
     // 16 Festungen
     // Agra (C31) erhält Taj Mahal (+4 Punkte)
-    this.citiesState['C31'].bonusTile = { type: 'taj_mahal', vp: 4, name: 'Taj Mahal (+4 VP)' };
+    this.citiesState['C31'].bonusTile = {
+      type: 'taj_mahal',
+      vp: 4,
+      name: 'Taj Mahal (+4 VP)',
+      image: '/assets/tokens/fortress_taj_mahal.png'
+    };
 
     // 15 übrige Festungen: zufällig verteilt
     const tiles = [
-      { type: 'vp', vp: 4, name: '+4 VP' },
-      { type: 'vp', vp: 4, name: '+4 VP' },
-      { type: 'vp', vp: 2, name: '+2 VP' },
-      { type: 'vp', vp: 2, name: '+2 VP' },
-      { type: 'vp', vp: 2, name: '+2 VP' },
-      { type: 'card', count: 1, name: '+1 Karte' },
-      { type: 'card', count: 1, name: '+1 Karte' },
-      { type: 'commodity', commodity: COMMODITIES.RICE, name: 'Reis' },
-      { type: 'commodity', commodity: COMMODITIES.RICE, name: 'Reis' },
-      { type: 'commodity', commodity: COMMODITIES.TEA, name: 'Tee' },
-      { type: 'commodity', commodity: COMMODITIES.TEA, name: 'Tee' },
-      { type: 'commodity', commodity: COMMODITIES.SPICE, name: 'Gewürze' },
-      { type: 'commodity', commodity: COMMODITIES.SPICE, name: 'Gewürze' },
-      { type: 'commodity', commodity: COMMODITIES.JEWEL, name: 'Edelsteine' },
-      { type: 'commodity', commodity: COMMODITIES.JEWEL, name: 'Edelsteine' }
+      { type: 'vp', vp: 4, name: '+4 VP', image: '/assets/tokens/fortress_points.png' },
+      { type: 'vp', vp: 4, name: '+4 VP', image: '/assets/tokens/fortress_points.png' },
+      { type: 'vp', vp: 2, name: '+2 VP', image: '/assets/tokens/fortress_points.png' },
+      { type: 'vp', vp: 2, name: '+2 VP', image: '/assets/tokens/fortress_points.png' },
+      { type: 'vp', vp: 2, name: '+2 VP', image: '/assets/tokens/fortress_points.png' },
+      { type: 'card', count: 1, name: '+1 Karte', image: '/assets/tokens/fortress_card.png' },
+      { type: 'card', count: 1, name: '+1 Karte', image: '/assets/tokens/fortress_card.png' },
+      { type: 'commodity', commodity: COMMODITIES.RICE, name: 'Reis', image: '/assets/tokens/fortress_points.png' },
+      { type: 'commodity', commodity: COMMODITIES.RICE, name: 'Reis', image: '/assets/tokens/fortress_points.png' },
+      { type: 'commodity', commodity: COMMODITIES.TEA, name: 'Tee', image: '/assets/tokens/fortress_tea.png' },
+      { type: 'commodity', commodity: COMMODITIES.TEA, name: 'Tee', image: '/assets/tokens/fortress_tea.png' },
+      { type: 'commodity', commodity: COMMODITIES.SPICE, name: 'Gewürze', image: '/assets/tokens/fortress_spice.png' },
+      { type: 'commodity', commodity: COMMODITIES.SPICE, name: 'Gewürze', image: '/assets/tokens/fortress_spice.png' },
+      { type: 'commodity', commodity: COMMODITIES.JEWEL, name: 'Edelsteine', image: '/assets/tokens/fortress_jewel.png' },
+      { type: 'commodity', commodity: COMMODITIES.JEWEL, name: 'Edelsteine', image: '/assets/tokens/fortress_jewel.png' }
     ];
 
     this.shuffle(tiles);

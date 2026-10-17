@@ -164,70 +164,66 @@ function renderBoardSvg(state) {
 
     // Festungs-Bonusplättchen (falls noch nicht genommen)
     if (cState.bonusTile) {
-      const bt = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-      bt.setAttribute('x', c.x - 11);
-      bt.setAttribute('y', c.y - 11);
-      bt.setAttribute('width', '22');
-      bt.setAttribute('height', '22');
-      bt.setAttribute('rx', '4');
-      bt.setAttribute('fill', '#4a154b');
-      bt.setAttribute('stroke', '#e1bee7');
-      bt.setAttribute('stroke-width', '1.5');
-      g.appendChild(bt);
-
-      const bText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-      bText.setAttribute('x', c.x);
-      bText.setAttribute('y', c.y + 4);
-      bText.setAttribute('text-anchor', 'middle');
-      bText.setAttribute('fill', '#fff');
-      bText.setAttribute('font-size', '10');
-      bText.setAttribute('font-weight', 'bold');
-      bText.textContent = cState.bonusTile.type === 'commodity'
-        ? (COMMODITY_EMOJIS[cState.bonusTile.commodity] || '📦')
-        : (cState.bonusTile.vp ? `+${cState.bonusTile.vp}` : '🎴');
-      g.appendChild(bText);
+      const btImg = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+      btImg.setAttribute('href', cState.bonusTile.image || '/assets/tokens/fortress_points.png');
+      btImg.setAttribute('x', c.x - 12);
+      btImg.setAttribute('y', c.y - 12);
+      btImg.setAttribute('width', '24');
+      btImg.setAttribute('height', '24');
+      btImg.setAttribute('class', 'fortress-tile-img');
+      g.appendChild(btImg);
     }
 
-    // Normaler Palast
+    // Normaler Palast (authentische 3D-Palastminiatur)
     if (cState.normalPalace) {
       const p = state.players.find(x => x.id === cState.normalPalace);
-      const colorHex = p ? p.color.hex : '#fff';
+      const palMap = {
+        'red': '/assets/palaces/palace_red.png',
+        'blue': '/assets/palaces/palace_blue.png',
+        'green': '/assets/palaces/palace_brown.png',
+        'yellow': '/assets/palaces/palace_beige.png',
+        'purple': '/assets/palaces/palace_grey.png'
+      };
+      const palImg = (p && palMap[p.color.id]) || '/assets/palaces/palace_beige.png';
 
-      // Palast-Symbol (Stilisiertes Holzkuppel-Icon)
-      const palace = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-      palace.setAttribute('x', c.x - 9);
-      palace.setAttribute('y', c.y - 9);
-      palace.setAttribute('width', '18');
-      palace.setAttribute('height', '18');
-      palace.setAttribute('rx', '3');
-      palace.setAttribute('fill', colorHex);
-      palace.setAttribute('stroke', '#fff');
-      palace.setAttribute('stroke-width', '1.5');
-      palace.setAttribute('class', 'palace-mark');
+      const palace = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+      palace.setAttribute('href', palImg);
+      palace.setAttribute('x', c.x - 14);
+      palace.setAttribute('y', c.y - 20);
+      palace.setAttribute('width', '28');
+      palace.setAttribute('height', '28');
+      palace.setAttribute('class', 'palace-miniature');
       g.appendChild(palace);
     }
 
-    // Kronen-Palast (Zweiter Palast oder Krone oben drauf)
+    // Kronen-Palast (Zweiter Palast mit Krone oben drauf)
     if (cState.crownPalace) {
       const p = state.players.find(x => x.id === cState.crownPalace);
-      const colorHex = p ? p.color.hex : '#ffd700';
+      const palMap = {
+        'red': '/assets/palaces/palace_red.png',
+        'blue': '/assets/palaces/palace_blue.png',
+        'green': '/assets/palaces/palace_brown.png',
+        'yellow': '/assets/palaces/palace_beige.png',
+        'purple': '/assets/palaces/palace_grey.png'
+      };
+      const palImg = (p && palMap[p.color.id]) || '/assets/palaces/palace_beige.png';
 
-      const crownP = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-      crownP.setAttribute('cx', c.x + 6);
-      crownP.setAttribute('cy', c.y - 6);
-      crownP.setAttribute('r', '8');
-      crownP.setAttribute('fill', colorHex);
-      crownP.setAttribute('stroke', '#ffd700');
-      crownP.setAttribute('stroke-width', '2');
-      g.appendChild(crownP);
+      const crownPal = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+      crownPal.setAttribute('href', palImg);
+      crownPal.setAttribute('x', c.x - 2);
+      crownPal.setAttribute('y', c.y - 24);
+      crownPal.setAttribute('width', '22');
+      crownPal.setAttribute('height', '22');
+      crownPal.setAttribute('class', 'palace-miniature');
+      g.appendChild(crownPal);
 
-      const crownIcon = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-      crownIcon.setAttribute('x', c.x + 6);
-      crownIcon.setAttribute('y', c.y - 2);
-      crownIcon.setAttribute('text-anchor', 'middle');
-      crownIcon.setAttribute('font-size', '10');
+      const crownIcon = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+      crownIcon.setAttribute('href', '/assets/tokens/crown.png');
+      crownIcon.setAttribute('x', c.x + 4);
+      crownIcon.setAttribute('y', c.y - 30);
+      crownIcon.setAttribute('width', '16');
+      crownIcon.setAttribute('height', '16');
       crownIcon.setAttribute('class', 'crown-mark');
-      crownIcon.textContent = '👑';
       g.appendChild(crownIcon);
     }
 
@@ -237,86 +233,49 @@ function renderBoardSvg(state) {
   // 3. Hof des Großmoguls (Court Panel rechts oben)
   svgCourtLayer.innerHTML = '';
   if (state.court) {
-    // a) Achteckiges Provinz-Plättchen (x: 792, y: 195)
-    const ptG = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-    const ptBox = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-    ptBox.setAttribute('x', '767');
-    ptBox.setAttribute('y', '170');
-    ptBox.setAttribute('width', '50');
-    ptBox.setAttribute('height', '50');
-    ptBox.setAttribute('rx', '8');
-    ptBox.setAttribute('fill', state.court.provinceTile ? '#2e1c0c' : '#111');
-    ptBox.setAttribute('stroke', state.court.provinceTile ? '#d7a15c' : '#444');
-    ptBox.setAttribute('stroke-width', '2');
-    ptG.appendChild(ptBox);
-
+    // a) Achteckiges Provinz-Plättchen (Originalfoto)
     if (state.court.provinceTile) {
-      const ptText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-      ptText.setAttribute('x', '792');
-      ptText.setAttribute('y', '192');
-      ptText.setAttribute('text-anchor', 'middle');
-      ptText.setAttribute('fill', '#ffd700');
-      ptText.setAttribute('font-size', '14');
-      ptText.setAttribute('font-weight', 'bold');
-      ptText.textContent = `#${state.court.provinceTile.number}`;
-      ptG.appendChild(ptText);
-
-      const goodsStr = state.court.provinceTile.goods.map(g => COMMODITY_EMOJIS[g] || g).join(' ');
-      const ptGoods = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-      ptGoods.setAttribute('x', '792');
-      ptGoods.setAttribute('y', '210');
-      ptGoods.setAttribute('text-anchor', 'middle');
-      ptGoods.setAttribute('font-size', '11');
-      ptGoods.textContent = goodsStr;
-      ptG.appendChild(ptGoods);
+      const tileImg = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+      const numStr = String(state.court.provinceTile.number).padStart(2, '0');
+      tileImg.setAttribute('href', state.court.provinceTile.image || `/assets/tiles/tile_${numStr}.png`);
+      tileImg.setAttribute('x', '764');
+      tileImg.setAttribute('y', '166');
+      tileImg.setAttribute('width', '56');
+      tileImg.setAttribute('height', '56');
+      tileImg.setAttribute('class', 'court-province-tile');
+      svgCourtLayer.appendChild(tileImg);
     }
-    svgCourtLayer.appendChild(ptG);
 
-    // b) Krone (x: 866, y: 185)
-    const crownG = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-    const crownTxt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    crownTxt.setAttribute('x', '866');
-    crownTxt.setAttribute('y', '192');
-    crownTxt.setAttribute('text-anchor', 'middle');
-    crownTxt.setAttribute('font-size', '22');
-    crownTxt.setAttribute('opacity', state.court.crown ? '1' : '0.2');
-    crownTxt.textContent = '👑';
-    crownG.appendChild(crownTxt);
-    svgCourtLayer.appendChild(crownG);
+    // b) Krone (Originalfoto)
+    const crownImg = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+    crownImg.setAttribute('href', '/assets/tokens/crown.png');
+    crownImg.setAttribute('x', '844');
+    crownImg.setAttribute('y', '166');
+    crownImg.setAttribute('width', '44');
+    crownImg.setAttribute('height', '44');
+    crownImg.setAttribute('opacity', state.court.crown ? '1' : '0.22');
+    crownImg.setAttribute('class', 'court-crown');
+    svgCourtLayer.appendChild(crownImg);
 
-    // c) 4 Einflussmarken
-    const tokenCoords = {
-      'Wesir': { x: 843, y: 138, sym: '👳' },
-      'General': { x: 887, y: 138, sym: '⚔️' },
-      'Mönch': { x: 843, y: 232, sym: '📿' },
-      'Prinzessin': { x: 887, y: 232, sym: '👸' }
+    // c) 4 Einflussmarken (Originalfotos)
+    const tokenInfo = {
+      'Wesir': { x: 820, y: 114, img: '/assets/tokens/influence_vizier.png' },
+      'General': { x: 868, y: 114, img: '/assets/tokens/influence_general.png' },
+      'Mönch': { x: 820, y: 216, img: '/assets/tokens/influence_monk.png' },
+      'Prinzessin': { x: 868, y: 216, img: '/assets/tokens/influence_princess.png' }
     };
 
-    Object.entries(tokenCoords).forEach(([type, info]) => {
+    Object.entries(tokenInfo).forEach(([type, info]) => {
       const isAvailable = state.court.tokens && state.court.tokens[type];
-      const tg = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-
-      const oval = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
-      oval.setAttribute('cx', info.x);
-      oval.setAttribute('cy', info.y);
-      oval.setAttribute('rx', '18');
-      oval.setAttribute('ry', '13');
-      oval.setAttribute('fill', isAvailable ? '#3d2514' : '#1a181e');
-      oval.setAttribute('stroke', isAvailable ? '#ffd700' : '#444');
-      oval.setAttribute('stroke-width', '1.5');
-      oval.setAttribute('opacity', isAvailable ? '1' : '0.35');
-      tg.appendChild(oval);
-
-      const sym = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-      sym.setAttribute('x', info.x);
-      sym.setAttribute('y', info.y + 5);
-      sym.setAttribute('text-anchor', 'middle');
-      sym.setAttribute('font-size', '14');
-      sym.setAttribute('opacity', isAvailable ? '1' : '0.35');
-      sym.textContent = info.sym;
-      tg.appendChild(sym);
-
-      svgCourtLayer.appendChild(tg);
+      const img = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+      img.setAttribute('href', info.img);
+      img.setAttribute('x', info.x);
+      img.setAttribute('y', info.y);
+      img.setAttribute('width', '40');
+      img.setAttribute('height', '40');
+      img.setAttribute('opacity', isAvailable ? '1' : '0.22');
+      img.setAttribute('class', 'court-influence-token');
+      svgCourtLayer.appendChild(img);
     });
   }
 
@@ -380,7 +339,11 @@ function renderMarket(state) {
     const cardEl = document.createElement('div');
     cardEl.className = 'market-card-wrapper';
     cardEl.title = `${c.color ? c.color.toUpperCase() : 'WEISS'}: ${(c.symbols || []).join(' + ')}`;
-    cardEl.innerHTML = generateAnalogCardSvg(c, { width: 62, height: 93, isMini: false });
+    if (c.image) {
+      cardEl.innerHTML = `<img src="${c.image}" class="market-photo-card" alt="${c.name || 'Karte'}" />`;
+    } else {
+      cardEl.innerHTML = generateAnalogCardSvg(c, { width: 62, height: 93, isMini: false });
+    }
     marketCardsEl.appendChild(cardEl);
   });
 }
@@ -389,7 +352,11 @@ function createMiniCard(c) {
   const div = document.createElement('div');
   div.className = 'table-mini-card-wrapper';
   div.title = `${c.color ? c.color.toUpperCase() : 'WEISS'}: ${(c.symbols || []).join(' + ')}`;
-  div.innerHTML = generateAnalogCardSvg(c, { width: 44, height: 66, isMini: true });
+  if (c.image) {
+    div.innerHTML = `<img src="${c.image}" class="table-mini-card-photo" alt="${c.name || 'Karte'}" />`;
+  } else {
+    div.innerHTML = generateAnalogCardSvg(c, { width: 44, height: 66, isMini: true });
+  }
   return div;
 }
 

@@ -407,3 +407,43 @@
   font-size: 0.9rem;
   color: var(--gold-text);
 }
+
+/* Authentic Board Components */
+.palace-miniature {
+  filter: drop-shadow(0 3px 4px rgba(0,0,0,0.7));
+  transform-origin: center bottom;
+  pointer-events: none;
+}
+.fortress-tile-img {
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));
+  pointer-events: none;
+}
+.court-province-tile {
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.8));
+}
+.court-crown {
+  filter: drop-shadow(0 3px 6px rgba(0,0,0,0.7));
+  transition: opacity 0.3s ease;
+}
+.court-influence-token {
+  filter: drop-shadow(0 3px 5px rgba(0,0,0,0.7));
+  transition: opacity 0.3s ease;
+}
+.market-photo-card {
+  width: 62px;
+  height: 93px;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+  border: 1px solid rgba(255,255,255,0.15);
+  object-fit: cover;
+  display: block;
+}
+.table-mini-card-photo {
+  width: 44px;
+  height: 66px;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+  border: 1px solid rgba(255,255,255,0.15);
+  object-fit: cover;
+  display: block;
+}
