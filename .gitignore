@@ -3,4 +3,7 @@ node_modules/
 Thumbs.db
 *.log
 scratch/
-
+raw_photos/
+extracted_images/
+*.pdf
+all_pdf_text.txt
